@@ -1,4 +1,5 @@
 **/sn/data/apps/
 node_modules/
+private/
 dist/
 .vscode
