@@ -44,11 +44,11 @@ describe("Get transactions from external json file", () => {
 
     // First value
     const next1 = await data.next();
-    expect(next1.value).toStrictEqual(TRANSACTION_DATA[0]);
+    expect(next1.value.data).toStrictEqual(TRANSACTION_DATA[0]);
 
     // Second value
     const next2 = await data.next();
-    expect(next2.value).toStrictEqual(TRANSACTION_DATA[1]);
+    expect(next2.value.data).toStrictEqual(TRANSACTION_DATA[1]);
 
     const done = (await data.next()).done;
     expect(done).toBeTruthy();

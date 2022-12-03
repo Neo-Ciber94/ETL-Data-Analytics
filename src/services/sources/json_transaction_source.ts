@@ -1,15 +1,21 @@
+import { TransactionError } from "../../model/transaction_error.js";
+import { Result } from "../../utils/result.js";
 import { Stream } from "../../utils/streams.js";
-import { JsonTransaction } from "../../validations/transactions_validation.js";
+import {
+  JsonTransaction,
+  JsonTransactionSchema,
+} from "../../validations/transactions_validation.js";
 import { TransactionSource } from "../interfaces/transaction_source.js";
 
 export class JsonTransactionSource
   implements TransactionSource<JsonTransaction>
 {
-  async *getAll(): Stream<JsonTransaction> {
+  private readonly endpoint =
+    "https://softrizon.com/wp-content/uploads/ch/group-b.json";
+
+  async *getAll(): Stream<Result<JsonTransaction, TransactionError>> {
     // FIXME: Streaming the json response could be better to prevent load +10mb.
-    const res = await fetch(
-      "https://softrizon.com/wp-content/uploads/ch/group-b.json"
-    );
+    const res = await fetch(this.endpoint);
 
     if (!res.ok) {
       throw Error(
@@ -25,6 +31,15 @@ export class JsonTransactionSource
       );
     }
 
-    yield* Stream.from(json);
+    for (const data of json) {
+      const result = JsonTransactionSchema.safeParse(data);
+      if (result.success) {
+        yield Result.ok(result.data);
+      } else {
+        yield Result.error({
+          message: result.error.message,
+        });
+      }
+    }
   }
 }
