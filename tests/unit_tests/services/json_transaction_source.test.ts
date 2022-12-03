@@ -3,6 +3,8 @@ import { describe, expect, test, vi } from "vitest";
 import { JsonTransactionSource } from "../../../src/services/sources/json_transaction_source";
 import { JsonTransaction } from "../../../src/validations/json_transaction_schema";
 
+const ENDPOINT = "https://softrizon.com/wp-content/uploads/ch/group-b.json";
+
 const fetchMock = createFetchMock(vi);
 fetchMock.enableMocks();
 
@@ -27,19 +29,16 @@ describe("Get transactions from external json file", () => {
       },
     ];
 
-    fetchMock.mockIf(
-      "https://softrizon.com/wp-content/uploads/ch/group-b.json",
-      async () => {
-        return {
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(TRANSACTION_DATA),
-        };
-      }
-    );
+    fetchMock.mockIf(ENDPOINT, async () => {
+      return {
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(TRANSACTION_DATA),
+      };
+    });
 
-    const source = new JsonTransactionSource();
+    const source = new JsonTransactionSource(ENDPOINT);
     const data = source.getAll();
 
     // First value
@@ -55,20 +54,17 @@ describe("Get transactions from external json file", () => {
   });
 
   test("expected failed request", () => {
-    fetchMock.mockIf(
-      "https://softrizon.com/wp-content/uploads/ch/group-b.json",
-      async () => {
-        return {
-          headers: {
-            "content-type": "application/json",
-          },
-          status: 500,
-          body: JSON.stringify({ error: "something went wrong" }),
-        };
-      }
-    );
+    fetchMock.mockIf(ENDPOINT, async () => {
+      return {
+        headers: {
+          "content-type": "application/json",
+        },
+        status: 500,
+        body: JSON.stringify({ error: "something went wrong" }),
+      };
+    });
 
-    const source = new JsonTransactionSource();
+    const source = new JsonTransactionSource(ENDPOINT);
     expect(async () => {
       const data = source.getAll();
       await data.next();

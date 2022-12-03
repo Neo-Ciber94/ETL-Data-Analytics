@@ -11,12 +11,11 @@ import { TransactionSource } from "../interfaces/transaction_source.js";
 export class JsonTransactionSource
   implements TransactionSource<JsonTransaction>
 {
-  private readonly endpoint =
-    "https://softrizon.com/wp-content/uploads/ch/group-b.json";
+  constructor(readonly url: string) {}
 
   async *getAll(): Stream<Result<JsonTransaction, TransactionError>> {
     // FIXME: Streaming the json response could be better to prevent load +10mb.
-    const res = await fetch(this.endpoint);
+    const res = await fetch(this.url);
 
     if (!res.ok) {
       throw Error(

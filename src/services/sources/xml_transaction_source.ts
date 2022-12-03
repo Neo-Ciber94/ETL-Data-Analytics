@@ -14,13 +14,31 @@ export class XmlTransactionSource implements TransactionSource<XmlTransaction> {
 
   async *getAll(): Stream<Result<XmlTransaction, TransactionError>> {
     const contents = await fs.readFile(this.filePath, "utf8");
-    const results = await xmlToJson(contents);
+    const results = await xmlToJson(contents, {
+      explicitArray: false,
+    });
 
-    if (Array.isArray(results)) {
-      throw new Error(`expected array of results but was ${typeof results}`);
+    /**
+     * We expected the XML in the form:
+     * <transactions>
+     *      <transaction>
+     *          ...
+     *      <transaction>
+     * </transactions>
+     */
+    const transactions = (<any>results)?.transactions?.transaction;
+
+    if (!Array.isArray(transactions)) {
+      throw new Error(
+        `expected array of results but was ${typeof transactions}: ${JSON.stringify(
+          transactions,
+          null,
+          2
+        )}`
+      );
     }
 
-    for (const data of results as any[]) {
+    for (const data of transactions) {
       const result = xmlTransactionSchema.safeParse(data);
       if (result.success) {
         yield Result.ok(result.data);
