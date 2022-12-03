@@ -15,15 +15,15 @@ export class JsonTransactionConsumer
     const reports = new LocalReportMap();
 
     for await (const t of transactions) {
-      const key = t.symbol;
-      reports.addOrUpdate(key, {
+      reports.post({
+        company: t.symbol,
         total_amount: t.total,
         total_stock: t.amount,
         type: t.transaction_code,
       });
     }
 
-    for (const report of reports.values()) {
+    for (const report of reports.getAll()) {
       yield Result.ok(report);
     }
   }

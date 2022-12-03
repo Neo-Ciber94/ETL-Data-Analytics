@@ -1,10 +1,11 @@
 import { Report } from "../model/report";
 import { TransactionType } from "../validations/transaction_type_schema";
 
-export interface TransactionInfo {
+export interface TransactionSummary {
+  company: string;
   type: TransactionType;
-  total_stock: number;
   total_amount: number;
+  total_stock: number;
 }
 
 /**
@@ -13,7 +14,12 @@ export interface TransactionInfo {
 export class LocalReportMap {
   private readonly map = new Map<string, Report>();
 
-  addOrUpdate(company: string, t: TransactionInfo) {
+  /**
+   * Adds or update a report using the given transaction information.
+   * @param transaction The transaction to add.
+   */
+  post(transaction: TransactionSummary) {
+    const company = transaction.company;
     let report = this.map.get(company);
 
     if (report == null) {
@@ -28,23 +34,32 @@ export class LocalReportMap {
       };
     }
 
-    switch (t.type) {
+    switch (transaction.type) {
       case "buy":
-        report.buy_count += t.total_stock;
-        report.total_stock += t.total_stock;
+        report.buy_count += 1;
+        report.total_stock += transaction.total_stock;
 
-        // I'm considering an investment when is buying
-        report.max_investment = Math.max(report.max_investment, t.total_amount);
-        report.min_investment = Math.min(report.min_investment, t.total_amount);
+        // I'm considering an investment only when is buying
+        report.max_investment = Math.max(
+          report.max_investment,
+          transaction.total_amount
+        );
+        report.min_investment = Math.min(
+          report.min_investment,
+          transaction.total_amount
+        );
         break;
       case "sell":
-        report.sell_count += t.total_stock;
-        report.total_stock -= t.total_stock;
+        report.sell_count += 1;
+        report.total_stock -= transaction.total_stock;
         break;
     }
   }
 
-  values() {
+  /**
+   * Get all the generated reports.
+   */
+  getAll() {
     return Array.from(this.map.values());
   }
 }
