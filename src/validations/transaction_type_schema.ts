@@ -1,4 +1,9 @@
 import { z } from "zod";
 
-export const transactionTypeSchema = z.enum(["buy", "sell"]);
-export type TransactionType = z.infer<typeof transactionTypeSchema>;
+const TYPES = ["buy", "sell"] as const;
+
+export type TransactionType = typeof TYPES[number];
+
+export const transactionTypeSchema = z
+  .enum(TYPES)
+  .refine((arg) => TYPES.includes(arg.toLowerCase() as TransactionType));
