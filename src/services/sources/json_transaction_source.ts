@@ -3,8 +3,9 @@ import { Result } from "../../utils/result.js";
 import { Stream } from "../../utils/streams.js";
 import {
   JsonTransaction,
-  JsonTransactionSchema,
-} from "../../validations/transactions_validation.js";
+  jsonTransactionSchema,
+} from "../../validations/json_transaction_schema.js";
+
 import { TransactionSource } from "../interfaces/transaction_source.js";
 
 export class JsonTransactionSource
@@ -32,7 +33,7 @@ export class JsonTransactionSource
     }
 
     for (const data of json) {
-      const result = JsonTransactionSchema.safeParse(data);
+      const result = jsonTransactionSchema.safeParse(data);
       if (result.success) {
         yield Result.ok(result.data);
       } else {
