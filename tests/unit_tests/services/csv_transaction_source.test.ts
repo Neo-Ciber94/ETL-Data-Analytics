@@ -123,6 +123,6 @@ describe("Get transactions from a csv file", () => {
       }
     };
 
-    expect(process).rejects.toThrow();
+    await expect(process).rejects.toThrow();
   });
 });

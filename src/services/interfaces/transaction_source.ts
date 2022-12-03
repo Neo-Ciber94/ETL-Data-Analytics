@@ -8,8 +8,6 @@ import { Stream } from "../../utils/streams.js";
 export interface TransactionSource<T> {
   /**
    * Returns a stream of data.
-   *
-   * @remarks We could return a `Result<Stream<T>>` for a more functional error handling.
    */
   getAll(): Stream<Result<T, TransactionError>>;
 }
