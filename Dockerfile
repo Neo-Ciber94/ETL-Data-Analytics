@@ -1,9 +1,13 @@
-FROM node:16.14.2-alpine3.14
+FROM node:18-alpine3.15
 ENV PORT 8080
 EXPOSE 8080
+
 WORKDIR /app
 COPY . .
-# RUN npm ci
-# RUN npm run build && npm prune --production
-# CMD [ "node", "dist/main" ]
-CMD [ "node", "./sn/index.js" ]
+
+# Install dependencies
+RUN npm install
+RUN npm run build && npm prune --production
+
+# Run
+CMD [ "node", "dist/index.js" ]

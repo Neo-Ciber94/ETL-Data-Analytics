@@ -1,0 +1,28 @@
+{
+  "name": "nodejs-etl-data-analytics",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon --exec \"npm run build && node dist/index.js\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Neo-Ciber94/ETL-Data-Analytics.git"
+  },
+  "keywords": [
+    "etl"
+  ],
+  "author": "Freddy L. Paredes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Neo-Ciber94/ETL-Data-Analytics/issues"
+  },
+  "homepage": "https://github.com/Neo-Ciber94/ETL-Data-Analytics#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20",
+    "typescript": "^4.9.3"
+  }
+}

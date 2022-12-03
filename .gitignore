@@ -1,1 +1,4 @@
 **/sn/data/apps/
+node_modules/
+dist/
+.vscode
