@@ -1,3 +1,4 @@
+import { Logger, nullLogger } from "../../logging/logger.js";
 import { TransactionError } from "../../model/transaction_error.js";
 import { Result } from "../../utils/result.js";
 import { Stream } from "../../utils/streams.js";
@@ -8,14 +9,20 @@ import {
 
 import { TransactionSource } from "./transaction_source.js";
 
+export interface JsonTransactionSourceOptions {
+  readonly url: string;
+  readonly logger?: Logger;
+}
+
 export class JsonTransactionSource
   implements TransactionSource<JsonTransaction>
 {
-  constructor(readonly url: string) {}
+  constructor(readonly options: JsonTransactionSourceOptions) {}
 
   async *getAll(): Stream<Result<JsonTransaction, TransactionError>> {
+    const { url, logger = nullLogger } = this.options;
     // FIXME: Streaming the json response could be better to prevent load +10mb.
-    const res = await fetch(this.url);
+    const res = await fetch(url);
 
     if (!res.ok) {
       throw Error(
@@ -36,6 +43,7 @@ export class JsonTransactionSource
       if (result.success) {
         yield Result.ok(result.data);
       } else {
+        logger.error(result.error.message);
         yield Result.error({
           message: result.error.message,
         });

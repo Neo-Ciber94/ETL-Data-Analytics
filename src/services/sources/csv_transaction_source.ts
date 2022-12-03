@@ -7,16 +7,24 @@ import {
   csvTransactionSchema,
 } from "../../validations/csv_transaction_schema.js";
 import { csvToJsonStream } from "../../utils/csv_to_json.js";
+import { Logger, nullLogger } from "../../logging/logger.js";
+
+export interface CsvTransactionSourceOptions {
+  readonly filePath: string;
+  readonly separator?: string;
+  readonly logger?: Logger;
+}
 
 export class CsvTransactionSource implements TransactionSource<CsvTransaction> {
-  constructor(readonly filePath: string, readonly separator = ",") {}
+  constructor(readonly options: CsvTransactionSourceOptions) {}
 
   async *getAll(): Stream<Result<CsvTransaction, TransactionError>> {
+    const { filePath, separator, logger = nullLogger } = this.options;
     const results = csvToJsonStream({
-      filePath: this.filePath,
-      separator: this.separator,
+      filePath: filePath,
+      separator: separator,
       onError: (e) => {
-        console.error(e);
+        logger.error(e);
       },
     });
 
@@ -26,7 +34,7 @@ export class CsvTransactionSource implements TransactionSource<CsvTransaction> {
       if (result.success) {
         yield Result.ok(result.data);
       } else {
-        console.error(result.error.message);
+        logger.error(result.error.message);
         yield Result.error({
           message: result.error.message,
         });

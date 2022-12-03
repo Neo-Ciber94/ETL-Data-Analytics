@@ -38,7 +38,7 @@ describe("Get transactions from external json file", () => {
       };
     });
 
-    const source = new JsonTransactionSource(ENDPOINT);
+    const source = new JsonTransactionSource({ url: ENDPOINT });
     const data = source.getAll();
 
     // First value
@@ -64,7 +64,7 @@ describe("Get transactions from external json file", () => {
       };
     });
 
-    const source = new JsonTransactionSource(ENDPOINT);
+    const source = new JsonTransactionSource({ url: ENDPOINT });
     expect(async () => {
       const data = source.getAll();
       await data.next();

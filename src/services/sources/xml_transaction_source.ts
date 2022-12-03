@@ -8,12 +8,19 @@ import {
 import { TransactionSource } from "./transaction_source.js";
 import fs from "fs/promises";
 import { xmlToJson } from "../../utils/xml_to_json.js";
+import { Logger, nullLogger } from "../../logging/logger.js";
+
+export interface XmlTransactionSourceOptions {
+  readonly filePath: string;
+  readonly logger?: Logger;
+}
 
 export class XmlTransactionSource implements TransactionSource<XmlTransaction> {
-  constructor(readonly filePath: string) {}
+  constructor(readonly options: XmlTransactionSourceOptions) {}
 
   async *getAll(): Stream<Result<XmlTransaction, TransactionError>> {
-    const contents = await fs.readFile(this.filePath, "utf8");
+    const { filePath, logger = nullLogger } = this.options;
+    const contents = await fs.readFile(filePath, "utf8");
     const results = await xmlToJson(contents, {
       explicitArray: false,
     });
@@ -43,6 +50,7 @@ export class XmlTransactionSource implements TransactionSource<XmlTransaction> {
       if (result.success) {
         yield Result.ok(result.data);
       } else {
+        logger.error(result.error.message);
         yield Result.error({
           message: result.error.message,
         });

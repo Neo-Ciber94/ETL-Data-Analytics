@@ -90,7 +90,7 @@ describe("Get transactions from a csv file", () => {
       transaction_type: TRANSACTIONS[1].transaction_type.toLowerCase(),
     } as CsvTransaction;
 
-    const source = new CsvTransactionSource(FILE_1_PATH);
+    const source = new CsvTransactionSource({ filePath: FILE_1_PATH });
     const data = source.getAll();
 
     const first = await data.next();
@@ -103,7 +103,7 @@ describe("Get transactions from a csv file", () => {
   });
 
   test("expected to read file failing", async () => {
-    const source = new CsvTransactionSource(FILE_2_PATH);
+    const source = new CsvTransactionSource({ filePath: FILE_2_PATH });
 
     const data = source.getAll();
 
@@ -112,9 +112,9 @@ describe("Get transactions from a csv file", () => {
   });
 
   test("expected file not found", async () => {
-    const source = new CsvTransactionSource(
-      `this_file_should_not_exists_${Date.now()}.csv`
-    );
+    const source = new CsvTransactionSource({
+      filePath: `this_file_should_not_exists_${Date.now()}.csv`,
+    });
 
     const process = async () => {
       const data = source.getAll();
