@@ -1,8 +1,14 @@
+/**
+ * An error result.
+ */
 export interface ResultError<TError> {
   readonly error: TError;
   readonly type: "error";
 }
 
+/**
+ * A successful result.
+ */
 export interface ResultOk<T> {
   readonly data: T;
   readonly type: "success";
