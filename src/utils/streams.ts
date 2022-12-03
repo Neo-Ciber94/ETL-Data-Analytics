@@ -7,7 +7,7 @@ export namespace Stream {
   /**
    * Creates a stream from the given values.
    */
-  export async function* from<T>(...values: T[]): Stream<T> {
+  export async function* from<T>(values: T[]): Stream<T> {
     for (const value of values) {
       yield value;
     }

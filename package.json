@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon --exec \"npm run build && node dist/index.js\"",
+    "start": "npm run build && node dist/index.js",
+    "dev": "nodemon --exec \"npm run start\"",
     "test": "vitest"
   },
   "repository": {
@@ -25,7 +26,8 @@
   "devDependencies": {
     "nodemon": "^2.0.20",
     "typescript": "^4.9.3",
-    "vitest": "^0.25.3"
+    "vitest": "^0.25.3",
+    "vitest-fetch-mock": "^0.2.1"
   },
   "dependencies": {
     "zod": "^3.19.1"
