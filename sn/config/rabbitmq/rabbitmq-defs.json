@@ -1,0 +1,87 @@
+{
+    "users": [
+      {
+        "name": "root",
+        "password_hash": "EfvdsZ0BaXypYpwMMb7sCwfSbBYOzIWP7ZFPaaRuyv8RIvlc",
+        "hashing_algorithm": "rabbit_password_hashing_sha256",
+        "tags": [
+          "administrator"
+        ],
+        "limits": {
+  
+        }
+      }
+    ],
+    "vhosts": [
+      {
+        "name": "/"
+      }
+    ],
+    "permissions": [
+      {
+        "user": "root",
+        "vhost": "/",
+        "configure": ".*",
+        "write": ".*",
+        "read": ".*"
+      }
+    ],
+    "policies": [
+  
+    ],
+    "exchanges": [
+      {
+        "name": "transactions.direct",
+        "vhost": "/",
+        "type": "direct",
+        "durable": true,
+        "auto_delete": false,
+        "internal": false,
+        "arguments": {
+  
+        }
+      }
+    ],
+    "queues": [
+      {
+        "name": "transactions.error",
+        "vhost": "/",
+        "durable": true,
+        "auto_delete": false,
+        "arguments": {
+          "x-queue-type": "classic"
+        }
+      },
+      {
+        "name": "transactions.insight",
+        "vhost": "/",
+        "durable": true,
+        "auto_delete": false,
+        "arguments": {
+          "x-queue-type": "classic"
+        }
+      }
+    ],
+    "bindings": [
+      {
+        "source": "transactions.direct",
+        "vhost": "/",
+        "destination": "transactions.error",
+        "destination_type": "queue",
+        "routing_key": "error",
+        "arguments": {
+  
+        }
+      },
+      {
+        "source": "transactions.direct",
+        "vhost": "/",
+        "destination": "transactions.insight",
+        "destination_type": "queue",
+        "routing_key": "insight",
+        "arguments": {
+  
+        }
+      }
+    ]
+}

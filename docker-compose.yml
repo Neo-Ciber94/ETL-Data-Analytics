@@ -1,0 +1,120 @@
+version: '3.8'
+services:
+  mysqldb:
+    image: mysql:8.0.31
+    container_name: mysqldb
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: EtLTest2022
+      MYSQL_DATABASE: analytics
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - ./sn/data/apps/mysql-data:/var/lib/mysql
+      - ./sn/data/init-scripts/01-sample-data.sql:/docker-entrypoint-initdb.d/01-sample-data.sql
+      - ./sn/data/init-scripts/02-custom-sql-scripts.sql:/docker-entrypoint-initdb.d/02-custom-sql-scripts.sql
+    ports:
+      - 3360:3306
+    expose:
+      - 3360
+    networks:
+      - default
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.0-apache
+    container_name: phpmyadmin
+    links:
+      - mysqldb
+    restart: always
+    environment:
+      PMA_HOST: mysqldb
+      PMA_PORT: 3360
+      PMA_ARBITRARY: 1
+    ports:
+      - 18081:80
+    expose:
+      - 18081
+    networks:
+      - default
+    depends_on: 
+      - mysqldb
+
+  mongodb:
+    image: mongo:5.0.13
+    container_name: mongodb
+    command: --quiet
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: EtLTest2022
+      MONGO_INITDB_DATABASE: analytics
+    volumes:
+      - ./sn/data/apps/mongo-data:/data/db
+      - ./sn/data/init-scripts/01-mongo-init.js:/docker-entrypoint-initdb.d//01-mongo-init.js:ro
+    ports:
+      - 27071:27017
+    expose:
+      - 27071
+    networks:
+      - default
+    
+  mongo-express:
+    image: mongo-express:0.54.0
+    container_name: mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: EtLTest2022
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: 27017
+    ports:
+      - 18082:8081
+    expose:
+      - 18082
+    networks:
+      - default
+    depends_on: 
+      - mongodb
+
+  rabbitmq:
+    image: rabbitmq:3.11.2-management-alpine
+    container_name: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: root
+      RABBITMQ_DEFAULT_PASS: EtLTest2022
+    volumes:
+      - ./sn/data/apps/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./sn/data/apps/rabbitmq/log/:/var/log/rabbitmq
+      - ./sn/config/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./sn/config/rabbitmq/rabbitmq-defs.json:/etc/rabbitmq/rabbitmq-defs.json:ro
+    ports:
+      - 5627:5672
+      - 18083:15672
+    expose:
+      - 5627
+      - 18083
+    networks:
+      - rabbitmq_network
+
+  etl:
+    image: etl:latest
+    container_name: etl
+    restart: always
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 18080:8080
+    expose:
+      - 18080
+    depends_on: 
+      - mysqldb
+      - mongodb
+      - rabbitmq
+
+networks:
+  default:
+    name: etl_network
+  rabbitmq_network:
+    driver: bridge
