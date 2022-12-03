@@ -1,4 +1,9 @@
 .gitignore
 .git
 dist/
+node_modules/
+private/
 assets/
+tests/
+vite.config.js
+nodemon.json
