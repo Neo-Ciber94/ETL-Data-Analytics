@@ -4,7 +4,7 @@ import { LocalReportMap } from "../../utils/report_map";
 import { Result } from "../../utils/result.js";
 import { Stream } from "../../utils/streams";
 import { CsvTransaction } from "../../validations/csv_transaction_schema";
-import { TransactionConsumer } from "../interfaces/transaction_consumer";
+import { TransactionConsumer } from "./transaction_consumer";
 
 export class CsvTransactionConsumer
   implements TransactionConsumer<CsvTransaction>

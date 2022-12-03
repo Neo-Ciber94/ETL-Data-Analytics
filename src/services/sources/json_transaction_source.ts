@@ -6,7 +6,7 @@ import {
   jsonTransactionSchema,
 } from "../../validations/json_transaction_schema.js";
 
-import { TransactionSource } from "../interfaces/transaction_source.js";
+import { TransactionSource } from "./transaction_source.js";
 
 export class JsonTransactionSource
   implements TransactionSource<JsonTransaction>

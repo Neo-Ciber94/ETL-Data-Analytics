@@ -4,7 +4,7 @@ import { LocalReportMap } from "../../utils/report_map";
 import { Result } from "../../utils/result";
 import { Stream } from "../../utils/streams";
 import { XmlTransaction } from "../../validations/xml_transaction_schema";
-import { TransactionConsumer } from "../interfaces/transaction_consumer";
+import { TransactionConsumer } from "./transaction_consumer";
 
 export class XmlTransactionConsumer
   implements TransactionConsumer<XmlTransaction>

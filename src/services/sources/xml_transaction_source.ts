@@ -5,7 +5,7 @@ import {
   XmlTransaction,
   xmlTransactionSchema,
 } from "../../validations/xml_transaction_schema.js";
-import { TransactionSource } from "../interfaces/transaction_source.js";
+import { TransactionSource } from "./transaction_source.js";
 import fs from "fs/promises";
 import { xmlToJson } from "../../utils/xml_to_json.js";
 

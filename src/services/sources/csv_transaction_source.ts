@@ -1,5 +1,5 @@
 import { Stream } from "../../utils/streams.js";
-import { TransactionSource } from "../interfaces/transaction_source.js";
+import { TransactionSource } from "./transaction_source.js";
 import { TransactionError } from "../../model/transaction_error.js";
 import { Result } from "../../utils/result.js";
 import {

@@ -4,7 +4,7 @@ import { LocalReportMap } from "../../utils/report_map.js";
 import { Result } from "../../utils/result.js";
 import { Stream } from "../../utils/streams.js";
 import { JsonTransaction } from "../../validations/json_transaction_schema.js";
-import { TransactionConsumer } from "../interfaces/transaction_consumer.js";
+import { TransactionConsumer } from "./transaction_consumer.js";
 
 export class JsonTransactionConsumer
   implements TransactionConsumer<JsonTransaction>
