@@ -9,5 +9,5 @@ export const jsonTransactionSchema = z.object({
   total: numberSchema,
   account_id: z.number(),
   transaction_code: transactionTypeSchema,
-  symbol: z.string(),
+  symbol: z.string().transform((e) => e.toLowerCase()),
 });
