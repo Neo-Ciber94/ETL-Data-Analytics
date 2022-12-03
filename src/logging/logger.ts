@@ -1,3 +1,5 @@
+import { winstonLogger } from "./winston.logger";
+
 /**
  * Provides methods for a logger.
  */
@@ -17,3 +19,10 @@ export const nullLogger: Logger = {
   error: () => {},
   warn: () => {},
 };
+
+/**
+ * Returns the default logger.
+ */
+export function getLogger(): Logger {
+  return winstonLogger;
+}
