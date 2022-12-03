@@ -1,7 +1,7 @@
 import createFetchMock from "vitest-fetch-mock";
 import { describe, expect, test, vi } from "vitest";
-import { JsonTransaction } from "../../../src/validations/transactions_validation";
 import { JsonTransactionSource } from "../../../src/services/sources/json_transaction_source";
+import { JsonTransaction } from "../../../src/validations/json_transaction_schema";
 
 const fetchMock = createFetchMock(vi);
 fetchMock.enableMocks();

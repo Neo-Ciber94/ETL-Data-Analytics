@@ -10,7 +10,7 @@ import {
 } from "../../validations/csv_transaction_schema.js";
 
 export class CsvTransactionSource implements TransactionSource<CsvTransaction> {
-  constructor(readonly filePath: string) {}
+  constructor(readonly filePath: string, readonly separator = ",") {}
 
   async *getAll(): Stream<Result<CsvTransaction, TransactionError>> {
     const fileStream = fs.createReadStream(this.filePath);
@@ -19,12 +19,22 @@ export class CsvTransactionSource implements TransactionSource<CsvTransaction> {
       crlfDelay: Infinity,
     });
 
+    fileStream.on("error", (err) => {
+      console.error(err);
+    });
+
     let headers: string[] = [];
     let lineNumber = 0;
 
     for await (const line of lines) {
-      const row = line.split(",");
       const curLineNumber = lineNumber++;
+
+      // Skip empty lines
+      if (line.trim().length === 0) {
+        continue;
+      }
+
+      const row = line.split(this.separator).map((e) => e.trim());
 
       if (curLineNumber === 0) {
         headers = row;
@@ -38,9 +48,11 @@ export class CsvTransactionSource implements TransactionSource<CsvTransaction> {
       }
 
       const result = csvTransactionSchema.safeParse(obj);
+
       if (result.success) {
         yield Result.ok(result.data);
       } else {
+        console.error(result.error.message);
         yield Result.error({
           message: result.error.message,
         });
