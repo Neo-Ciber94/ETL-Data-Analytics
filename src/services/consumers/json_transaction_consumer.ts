@@ -3,15 +3,23 @@ import { TransactionError } from "../../model/transaction_error.js";
 import { LocalReportMap } from "../../utils/report_map.js";
 import { Result } from "../../utils/result.js";
 import { Stream } from "../../utils/streams.js";
+import { noop } from "../../utils/noop.js";
 import { JsonTransaction } from "../../validations/json_transaction_schema.js";
 import { InputStream, TransactionConsumer } from "./transaction_consumer.js";
+
+export interface JsonTransactionConsumerOptions {
+  readonly onSuccessfullyProcessed?: (transaction: JsonTransaction) => void;
+}
 
 export class JsonTransactionConsumer
   implements TransactionConsumer<JsonTransaction>
 {
+  constructor(readonly options: JsonTransactionConsumerOptions = {}) {}
+
   async *process(
     transactions: InputStream<JsonTransaction>
   ): Stream<Result<Report, TransactionError>> {
+    const { onSuccessfullyProcessed = noop } = this.options;
     const reports = new LocalReportMap();
 
     for await (const result of transactions) {
@@ -28,6 +36,8 @@ export class JsonTransactionConsumer
               total_stock: t.amount,
               type: t.transaction_code,
             });
+
+            onSuccessfullyProcessed({ ...t });
           }
           break;
       }

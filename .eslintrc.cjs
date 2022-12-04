@@ -9,7 +9,7 @@ module.exports = {
     // "plugin:import/errors",
     // "plugin:import/warnings",
     // "plugin:import/javascript",
-    //"plugin:import/typescript",
+    "plugin:import/typescript",
   ],
   overrides: [
     {
@@ -37,7 +37,8 @@ module.exports = {
     },
     "import/resolver": {
       typescript: {
-        project: "./",
+        project: "./tsconfig.json",
+        baseUrl: "./src"
       },
       node: {
         extensions: [".js", ".jsx", ".ts", ".tsx"],
