@@ -13,7 +13,8 @@
     "test:watch": "vitest",
     "lint": "npx eslint src/**/*.ts",
     "clean": "npx rimraf dist/",
-    "clean:mysql": "npx rimraf ./sn/data/apps/mysql-data"
+    "clean:mysql": "npx rimraf ./sn/data/apps/mysql-data",
+    "prisma:generate": "npx prisma generate"
   },
   "repository": {
     "type": "git",
