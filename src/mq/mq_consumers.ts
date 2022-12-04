@@ -2,6 +2,7 @@ import amqplib from "amqplib";
 import { Logger } from "../logging/logger.js";
 import { ReportRepository } from "../repositories/report.repository.js";
 
+// 1 second
 const THRESHOLD = 1000;
 
 export function messageQueueReportConsumer(
@@ -12,6 +13,7 @@ export function messageQueueReportConsumer(
     const buffer = msg?.content;
     const timestamp = msg?.properties.timestamp;
 
+    // Ignore the message if is too old
     if (timestamp && Date.now() > timestamp + THRESHOLD) {
       return;
     }
@@ -34,6 +36,7 @@ export function messageQueueErrorsConsumer(logger: Logger) {
     const buffer = msg?.content;
     const timestamp = msg?.properties.timestamp;
 
+    // Ignore the message if is too old
     if (timestamp && Date.now() > timestamp + THRESHOLD) {
       return;
     }
