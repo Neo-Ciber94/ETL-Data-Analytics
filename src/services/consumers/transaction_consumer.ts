@@ -11,7 +11,9 @@ export type InputStream<T> = Stream<Result<T, TransactionError>>;
 export interface TransactionConsumer<T> {
   /**
    * Process all the given transactions and return the results as a async iterator (stream).
-   * @param transactions The transactions to process.
+   * @param transactions The stream of transactions to process.
    */
-  process(transactions: InputStream<T>): Stream<Result<Report, TransactionError>>;
+  process(
+    transactions: InputStream<T>
+  ): Stream<Result<Report, TransactionError>>;
 }

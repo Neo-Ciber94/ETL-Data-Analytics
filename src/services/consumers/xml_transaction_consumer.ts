@@ -1,10 +1,10 @@
-import { Report } from "../../model/report";
-import { TransactionError } from "../../model/transaction_error";
-import { LocalReportMap } from "../../utils/report_map";
-import { Result } from "../../utils/result";
-import { Stream } from "../../utils/streams";
-import { XmlTransaction } from "../../validations/xml_transaction_schema";
-import { InputStream, TransactionConsumer } from "./transaction_consumer";
+import { Report } from "../../model/report.js";
+import { TransactionError } from "../../model/transaction_error.js";
+import { LocalReportMap } from "../../utils/report_map.js";
+import { Result } from "../../utils/result.js";
+import { Stream } from "../../utils/streams.js";
+import { XmlTransaction } from "../../validations/xml_transaction_schema.js";
+import { InputStream, TransactionConsumer } from "./transaction_consumer.js";
 
 export class XmlTransactionConsumer
   implements TransactionConsumer<XmlTransaction>

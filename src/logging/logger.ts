@@ -1,4 +1,4 @@
-import { winstonLogger } from "./winston.logger";
+import { winstonLogger } from "./winston.logger.js";
 
 /**
  * Provides methods for a logger.

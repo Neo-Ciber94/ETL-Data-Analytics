@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { numberSchema } from "./number_schema";
-import { transactionTypeSchema } from "./transaction_type_schema";
+import { numberSchema } from "./number_schema.js";
+import { transactionTypeSchema } from "./transaction_type_schema.js";
 
 export type XmlTransaction = z.infer<typeof xmlTransactionSchema>;
 export const xmlTransactionSchema = z.object({

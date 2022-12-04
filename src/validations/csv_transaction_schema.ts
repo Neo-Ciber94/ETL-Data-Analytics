@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { dateSchema } from "./date_schema.js";
 import { numberSchema } from "./number_schema.js";
-import { transactionTypeSchema } from "./transaction_type_schema";
+import { transactionTypeSchema } from "./transaction_type_schema.js";
 
 export type CsvTransaction = z.infer<typeof csvTransactionSchema>;
 export const csvTransactionSchema = z.object({

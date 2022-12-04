@@ -1,5 +1,5 @@
 import { Report } from "../model/report";
-import { TransactionType } from "../validations/transaction_type_schema";
+import { TransactionType } from "../validations/transaction_type_schema.js";
 
 export interface TransactionSummary {
   company: string;
@@ -12,7 +12,7 @@ export interface TransactionSummary {
  * An in memory map to build reports.
  */
 export class LocalReportMap {
-  private readonly map = new Map<string, Report>();
+  private readonly reports = new Map<string, Report>();
 
   /**
    * Adds or update a report using the given transaction information.
@@ -20,7 +20,7 @@ export class LocalReportMap {
    */
   post(transaction: TransactionSummary) {
     const company = transaction.company;
-    let report = this.map.get(company);
+    let report = this.reports.get(company);
 
     if (report == null) {
       report = {
@@ -30,7 +30,7 @@ export class LocalReportMap {
         sell_count: 0,
         total_stock: 0,
         max_investment: 0,
-        min_investment: 0,
+        min_investment: Number.POSITIVE_INFINITY,
       };
     }
 
@@ -54,12 +54,14 @@ export class LocalReportMap {
         report.total_stock -= transaction.total_stock;
         break;
     }
+
+    this.reports.set(company, report);
   }
 
   /**
    * Get all the generated reports.
    */
   getAll() {
-    return Array.from(this.map.values());
+    return Array.from(this.reports.values());
   }
 }
