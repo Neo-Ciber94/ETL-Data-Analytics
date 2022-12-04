@@ -14,7 +14,7 @@ export default async function initMessageQueueConsumers(logger: Logger) {
 
   await mqChannel.consume(
     queueKeys.queue.insights,
-    messageQueueReportConsumer(logger, reportRepository)
+    messageQueueReportConsumer(logger, reportRepository),
   );
 
   await mqChannel.consume(

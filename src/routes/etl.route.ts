@@ -127,7 +127,11 @@ async function publishResults(
           channel.publish(
             queueKeys.exchanges.transactions,
             queueKeys.routingKey.error,
-            Buffer.from(result.error.message)
+            Buffer.from(result.error.message),
+            {
+              expiration: 1000,
+              timestamp: Date.now(),
+            }
           );
         }
         break;
@@ -136,7 +140,11 @@ async function publishResults(
           channel.publish(
             queueKeys.exchanges.transactions,
             queueKeys.routingKey.insight,
-            Buffer.from(JSON.stringify(result.data))
+            Buffer.from(JSON.stringify(result.data)),
+            {
+              expiration: 1000,
+              timestamp: Date.now(),
+            }
           );
         }
         break;
