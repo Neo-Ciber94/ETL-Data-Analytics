@@ -1,5 +1,5 @@
-import { ReportModel } from "../db/mongo/report.mongo";
-import { Report } from "../validations/report_schema";
+import { ReportModel } from "../db/mongo/report.mongo.js";
+import { Report } from "../validations/report_schema.js";
 
 export class ReportRepository {
   async getAll(): Promise<Report[]> {

@@ -12,9 +12,14 @@ import { XmlTransactionSource } from "../services/sources/xml_transaction_source
 import { XmlTransactionConsumer } from "../services/consumers/xml_transaction_consumer.js";
 import { CustomerRepository } from "../repositories/customer.repository.js";
 import { prismaClient } from "../db/sql/client.prisma.js";
+import { Report } from "../validations/report_schema.js";
+import { Result } from "../utils/result.js";
+import { Stream } from "../utils/streams.js";
+import { TransactionError } from "../model/transaction_error.js";
 
 interface Summary {
   count: number;
+  elapsed: number;
 }
 
 export const etlRouter = express.Router();
@@ -25,6 +30,7 @@ etlRouter.post("/process", async (_req, res) => {
     console.log(`${summary.count} transactions successfully processed`);
     return res.status(200).json({
       message: `${summary.count} transactions where successfully processed`,
+      duration: `${summary.elapsed}ms`,
       success: true,
     });
   } catch (error) {
@@ -41,6 +47,7 @@ async function processTransactions(): Promise<Summary> {
   const client = prismaClient;
   const customerRepository = new CustomerRepository(client);
   const etl = new TransactionEtl({ logger });
+  const startTime = performance.now();
 
   const counter = { count: 0 };
   const onSuccessfullyProcessed = () => {
@@ -80,11 +87,26 @@ async function processTransactions(): Promise<Summary> {
     // )
     .results();
 
+  // Publish results to queues
+  await publishResults(results);
+
+  const endTime = performance.now();
+  const elapsed = endTime - startTime;
+  return {
+    count: counter.count,
+    elapsed,
+  };
+}
+
+async function publishResults(
+  results: Stream<Result<Report, TransactionError>>
+) {
   const channel = await messageQueue.createChannel();
 
   // FIXME: This should be parallelized
   for await (const result of results) {
     // console.log(`${Date.now()} - Publishing ${result.type} result to queue`);
+    
     switch (result.type) {
       case "error":
         {
@@ -110,7 +132,4 @@ async function processTransactions(): Promise<Summary> {
   }
 
   await messageQueue.close();
-  return {
-    count: counter.count,
-  };
 }

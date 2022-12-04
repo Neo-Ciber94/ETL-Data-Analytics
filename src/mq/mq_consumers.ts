@@ -25,8 +25,8 @@ export function messageQueueErrorsConsumer(logger: Logger) {
   return (msg: amqplib.ConsumeMessage | null) => {
     const buffer = msg?.content;
     if (buffer) {
-      const json = buffer.toString();
-      logger.error({ json });
+      const data = buffer.toString();
+      logger.error(data);
     }
   };
 }

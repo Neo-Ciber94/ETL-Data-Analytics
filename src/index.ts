@@ -7,7 +7,7 @@ import morgan from "morgan";
 import { etlRouter } from "./routes/etl.route.js";
 import { getLogger } from "./logging/logger.js";
 import { prismaClient } from "./db/sql/client.prisma.js";
-import initMessageQueueConsumers from "./mq/init";
+import initMessageQueueConsumers from "./mq/init.js";
 import { MongoClient } from "./db/mongo/client.mongo.js";
 
 const logger = getLogger();
