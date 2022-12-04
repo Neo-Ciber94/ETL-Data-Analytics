@@ -42,8 +42,7 @@ describe("Gets data from a JSON source and process it", () => {
     });
 
     // Mock repository
-
-    const repo: Partial<CustomerRepository> = {
+    const mockRepo: Partial<CustomerRepository> = {
       getByAccountId(_accountId) {
         return Promise.resolve({
           name: "John",
@@ -55,13 +54,12 @@ describe("Gets data from a JSON source and process it", () => {
       },
     };
 
-    const customerRepository = repo as CustomerRepository;
-
     // Load transactions
     const source = new JsonTransactionSource({ url: ENDPOINT });
     const transactions = source.stream();
 
     // Process transactions
+    const customerRepository = mockRepo as CustomerRepository;
     const consumer = new JsonTransactionConsumer({
       customerRepository,
     });
