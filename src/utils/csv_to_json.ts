@@ -62,6 +62,7 @@ export async function* csvToJsonStream(
       continue;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const obj = {} as any;
     for (let i = 0; i < headers.length; i++) {
       const key = headers[i]!; // SAFETY: index in range

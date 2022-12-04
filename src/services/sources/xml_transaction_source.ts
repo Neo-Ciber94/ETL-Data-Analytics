@@ -33,6 +33,7 @@ export class XmlTransactionSource implements TransactionSource<XmlTransaction> {
      *      <transaction>
      * </transactions>
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const transactions = (<any>results)?.transactions?.transaction;
 
     if (!Array.isArray(transactions)) {

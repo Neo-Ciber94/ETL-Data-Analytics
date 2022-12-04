@@ -7,7 +7,7 @@ import { TransactionConsumer } from "../consumers/transaction_consumer.js";
 import { TransactionSource } from "../sources/transaction_source.js";
 import { Etl } from "./etl.js";
 
-type EtlSource = [TransactionSource<any>, TransactionConsumer<any>];
+type EtlSource = [TransactionSource<unknown>, TransactionConsumer<unknown>];
 
 export interface TransactionEtlOptions {
   readonly logger?: Logger;

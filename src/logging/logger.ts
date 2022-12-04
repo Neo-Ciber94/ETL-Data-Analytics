@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { winstonLogger } from "./winston.logger.js";
 
 /**
@@ -14,10 +15,10 @@ export interface Logger {
  * A logger that logs no information.
  */
 export const nullLogger: Logger = {
-  debug: () => {},
-  info: () => {},
-  error: () => {},
-  warn: () => {},
+  debug: () => null,
+  info: () => null,
+  error: () => null,
+  warn: () => null,
 };
 
 /**

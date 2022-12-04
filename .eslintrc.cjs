@@ -26,6 +26,9 @@ module.exports = {
   rules: {
     "require-await": "off",
     "@typescript-eslint/require-await": "error",
+    "@typescript-eslint/await-thenable": "error",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-floating-promises": ["error"],
   },
   settings: {
     "import/extensions": [".js", ".jsx"],
