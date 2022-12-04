@@ -14,3 +14,4 @@ vite.config.js
 nodemon.json
 .eslintrc.*
 README.md
+.eslintignore

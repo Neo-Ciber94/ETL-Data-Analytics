@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-undef
 module.exports = {
   env: {
     browser: true,
@@ -7,18 +6,27 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:import/javascript",
-    "plugin:import/typescript",
+    // "plugin:import/errors",
+    // "plugin:import/warnings",
+    // "plugin:import/javascript",
+    //"plugin:import/typescript",
+  ],
+  overrides: [
+    {
+      files: ["./src/**/*.ts"],
+    },
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
+    project: "./tsconfig.json",
   },
   plugins: ["@typescript-eslint"],
-  rules: {},
+  rules: {
+    "require-await": "off",
+    "@typescript-eslint/require-await": "error",
+  },
   settings: {
     "import/extensions": [".js", ".jsx"],
     "import/parsers": {
