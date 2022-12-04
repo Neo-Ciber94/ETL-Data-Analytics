@@ -105,7 +105,8 @@ async function processTransactions(): Promise<Summary> {
 
   const endTime = performance.now();
   const elapsed = endTime - startTime;
-  console.log(`${MemoryCache.bytesUsed} bytes used in memory cache`);
+  // console.log(`${MemoryCache.bytesUsed} bytes used in memory cache`);
+
   return {
     count: counter.count,
     elapsed,

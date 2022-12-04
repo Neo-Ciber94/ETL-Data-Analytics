@@ -14,14 +14,15 @@ export class MemoryCache<T> implements ICache<T> {
     }
   }
 
-  /**
-   * Calculates the number of bytes used in all the available caches.
-   * @returns The number of bytes used in all the caches.
-   */
-  static get bytesUsed(): number {
-    const size = Buffer.byteLength(JSON.stringify(CACHES))
-    return size;
-  }
+  // /**
+  //  * Calculates the number of bytes used in all the available caches.
+  //  * @returns The number of bytes used in all the caches.
+  //  */
+  // static get bytesUsed(): number {
+  //   // FIXME: This is retuning 16 bytes always
+  //   const size = Buffer.byteLength(JSON.stringify(CACHES))
+  //   return size;
+  // }
 
   constructor(
     readonly baseKey: string,
