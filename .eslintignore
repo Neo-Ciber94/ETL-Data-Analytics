@@ -1,3 +1,4 @@
 .eslintrc.cjs
 vite.config.js
 utils
+tests
