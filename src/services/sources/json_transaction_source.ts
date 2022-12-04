@@ -6,7 +6,6 @@ import {
   JsonTransaction,
   jsonTransactionSchema,
 } from "../../validations/json_transaction_schema.js";
-
 import { TransactionSource } from "./transaction_source.js";
 
 export interface JsonTransactionSourceOptions {
