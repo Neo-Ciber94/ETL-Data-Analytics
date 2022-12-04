@@ -5,7 +5,7 @@
 [ci]: https://github.com/Neo-Ciber94/ETL-Data-Analytics/actions/workflows/ci.yml
 [ci_badge]: https://github.com/Neo-Ciber94/ETL-Data-Analytics/actions/workflows/ci.yml/badge.svg
 
-An Extract-Transform-Load (ETL) project from 3 sources.
+An Extract-Transform-Load (ETL) pipeline for stocks from 3 sources.
 
 ## Diagram
 
