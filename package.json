@@ -14,6 +14,7 @@
     "lint": "npx eslint src/**/*.ts",
     "clean": "npx rimraf dist/",
     "clean:mysql": "npx rimraf ./sn/data/apps/mysql-data",
+    "clean:etl": "docker image rm -f etl",
     "prisma:generate": "npx dotenv-cli -e .env.local npx prisma generate"
   },
   "repository": {
