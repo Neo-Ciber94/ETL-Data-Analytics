@@ -43,3 +43,6 @@ An Extract-Transform-Load (ETL) pipeline for stocks from 3 sources.
    - user: root
    - password: EtLTest2022
 5. To remove the containers run `docker compose down`
+
+
+If you make changes to the code before deploy delete the `etl` image from docker (if exists).
