@@ -108,10 +108,14 @@ services:
       - 18080:8080
     expose:
       - 18080
+    environment:
+      - CONTAINERIZED=true
     depends_on: 
       - mysqldb
       - mongodb
       - rabbitmq
+    networks:
+      - default
 
 networks:
   default:

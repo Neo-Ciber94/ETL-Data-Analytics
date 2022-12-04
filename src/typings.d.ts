@@ -6,6 +6,11 @@ declare namespace NodeJS {
     ENV?: ENV;
 
     /**
+     * A `true` or `false` value indicating whether if the process is running in a container.
+     */
+    CONTAINERIZED?: string;
+
+    /**
      * Message queue url.
      */
     RABBITMQ_URL: string;

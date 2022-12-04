@@ -14,7 +14,7 @@
     "lint": "npx eslint src/**/*.ts",
     "clean": "npx rimraf dist/",
     "clean:mysql": "npx rimraf ./sn/data/apps/mysql-data",
-    "prisma:generate": "npx prisma generate"
+    "prisma:generate": "npx dotenv-cli -e .env.local npx prisma generate"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,7 @@
     "@types/xml2js": "^0.4.11",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
+    "dotenv-cli": "^6.0.0",
     "eslint": "^8.29.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.5.0",
