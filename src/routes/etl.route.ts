@@ -1,7 +1,7 @@
 import path from "path";
 import express from "express";
 import { queueKeys } from "../config/queues.js";
-import { messageQueue } from "../db/mq/rabbitmq.js";
+import { connectToQueue } from "../db/mq/rabbitmq.js";
 import { getLogger, Logger } from "../logging/logger.js";
 import { JsonTransactionConsumer } from "../services/consumers/json_transaction_consumer.js";
 import { TransactionEtl } from "../services/etl/transaction_etl.js";
@@ -16,6 +16,9 @@ import { Report } from "../validations/report_schema.js";
 import { Result } from "../utils/result.js";
 import { Stream } from "../utils/streams.js";
 import { TransactionError } from "../model/transaction_error.js";
+import { MemoryCache } from "../caching/memory.cache.js";
+import { customers } from "@prisma/client";
+import amqplib from "amqplib";
 
 interface Summary {
   count: number;
@@ -43,16 +46,24 @@ etlRouter.post("/process", async (_req, res) => {
 });
 
 async function processTransactions(): Promise<Summary> {
+  // deps
+  const mqConnection = await connectToQueue();
   const logger: Logger = getLogger();
   const client = prismaClient;
-  const customerRepository = new CustomerRepository(client);
-  const etl = new TransactionEtl({ logger });
-  const startTime = performance.now();
+  const customerCache = new MemoryCache<customers>("customers"); // TODO: Change for redis
+  const customerRepository = new CustomerRepository({
+    client,
+    cache: customerCache,
+  });
 
+  // summaries
+  const startTime = performance.now();
   const counter = { count: 0 };
   const onSuccessfullyProcessed = () => {
     counter.count += 1;
   };
+
+  const etl = new TransactionEtl({ logger });
 
   const results = etl
     .pipe(
@@ -65,33 +76,36 @@ async function processTransactions(): Promise<Summary> {
         customerRepository,
       })
     )
-    // .pipe(
-    //   new CsvTransactionSource({
-    //     filePath: path.join(process.cwd(), "sn/data/group-a.csv"),
-    //     logger,
-    //   }),
-    //   new CsvTransactionConsumer({
-    //     onSuccessfullyProcessed,
-    //     customerRepository,
-    //   })
-    // )
-    // .pipe(
-    //   new XmlTransactionSource({
-    //     filePath: path.join(process.cwd(), "sn/data/group-c.xml"),
-    //     logger,
-    //   }),
-    //   new XmlTransactionConsumer({
-    //     onSuccessfullyProcessed,
-    //     customerRepository,
-    //   })
-    // )
+    .pipe(
+      new CsvTransactionSource({
+        filePath: path.join(process.cwd(), "sn/data/group-a.csv"),
+        logger,
+      }),
+      new CsvTransactionConsumer({
+        onSuccessfullyProcessed,
+        customerRepository,
+      })
+    )
+    .pipe(
+      new XmlTransactionSource({
+        filePath: path.join(process.cwd(), "sn/data/group-c.xml"),
+        logger,
+      }),
+      new XmlTransactionConsumer({
+        onSuccessfullyProcessed,
+        customerRepository,
+      })
+    )
     .results();
 
   // Publish results to queues
-  await publishResults(results);
+  const channel = await mqConnection.createChannel();
+  await publishResults(channel, results);
+  await mqConnection.close();
 
   const endTime = performance.now();
   const elapsed = endTime - startTime;
+  console.log(`${MemoryCache.bytesUsed} bytes used in memory cache`);
   return {
     count: counter.count,
     elapsed,
@@ -99,14 +113,13 @@ async function processTransactions(): Promise<Summary> {
 }
 
 async function publishResults(
+  channel: amqplib.Channel,
   results: Stream<Result<Report, TransactionError>>
 ) {
-  const channel = await messageQueue.createChannel();
-
   // FIXME: This should be parallelized
   for await (const result of results) {
     // console.log(`${Date.now()} - Publishing ${result.type} result to queue`);
-    
+
     switch (result.type) {
       case "error":
         {
@@ -130,6 +143,4 @@ async function publishResults(
         break;
     }
   }
-
-  await messageQueue.close();
 }

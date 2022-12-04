@@ -1,6 +1,6 @@
 import { Logger } from "../logging/logger.js";
 import { queueKeys } from "../config/queues.js";
-import { messageQueue } from "../db/mq/rabbitmq.js";
+import { connectToQueue } from "../db/mq/rabbitmq.js";
 import {
   messageQueueReportConsumer,
   messageQueueErrorsConsumer,
@@ -8,7 +8,8 @@ import {
 import { ReportRepository } from "../repositories/report.repository.js";
 
 export default async function initMessageQueueConsumers(logger: Logger) {
-  const mqChannel = await messageQueue.createChannel();
+  const conn = await connectToQueue();
+  const mqChannel = await conn.createChannel();
   const reportRepository = new ReportRepository();
 
   await mqChannel.consume(
