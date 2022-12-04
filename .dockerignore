@@ -1,5 +1,9 @@
+# Github
 .gitignore
+.github
 .git
+
+# Development
 dist/
 node_modules/
 private/
