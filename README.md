@@ -11,27 +11,29 @@ An Extract-Transform-Load (ETL) project from 3 sources.
 
 ![Flow graph](./assets/process_transactions_graph.png)
 
-
 ## Getting started
 
 1. To start the project use `docker compose up -d` and wait for all the services to initialize
 2. After that hit the endpoint `http://localhost:18080/etl/process` to start processing the transactions
-    - **(Windows)**
 
-        ```bash
-        Invoke-WebRequest http://localhost:18080/etl/process -Method POST -UseBasicParsing
-        ```
+   - **(Windows)**
 
-    - **(Linux)**
+     ```bash
+     Invoke-WebRequest http://localhost:18080/etl/process -Method POST -UseBasicParsing
+     ```
 
-        ```bash
-        curl -X POST http://localhost:18080/etl/process
-        ```
+   - **(Linux)**
 
-    This may take some seconds
+     ```bash
+     curl -X POST http://localhost:18080/etl/process
+     ```
+
+   This may take some seconds
+
 3. Check the reports in the `mongodb` database, in the `reports` collection: <http://localhost:18082>
-    - user: root
-    - password: EtLTest2022
+   - user: root
+   - password: EtLTest2022
 4. Check the rabbit message queue, in the `transactions.error` and `transactions.insight` queues: <http://localhost:18083>
-    - user: root
-    - password: EtLTest2022
+   - user: root
+   - password: EtLTest2022
+5. To remove the containers run `docker compose down`

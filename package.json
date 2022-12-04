@@ -15,7 +15,10 @@
     "clean": "npx rimraf dist/",
     "clean:mysql": "npx rimraf ./sn/data/apps/mysql-data",
     "clean:etl": "docker image rm -f etl",
-    "prisma:generate": "npx dotenv-cli -e .env.local npx prisma generate"
+    "prisma:generate": "npx dotenv-cli -e .env.local npx prisma generate",
+    "docker:local:rm": "docker image rm -f etl_local",
+    "docker:local:build": "docker build -t etl_local .",
+    "docker:local:run": "docker run -dp 8080:8080 etl_local"
   },
   "repository": {
     "type": "git",
