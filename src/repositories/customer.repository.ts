@@ -42,4 +42,15 @@ export class CustomerRepository {
 
     return customer;
   }
+
+  // FIXME: Searching for the name is not safe
+  async dangerouslyGetCustomerByName(name: string): Promise<customers | null> {
+    const customer = await this.client.customers.findFirst({
+      where: {
+        name,
+      },
+    });
+
+    return customer;
+  }
 }
