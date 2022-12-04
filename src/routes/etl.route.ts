@@ -6,26 +6,25 @@ import { getLogger, Logger } from "../logging/logger.js";
 import { JsonTransactionConsumer } from "../services/consumers/json_transaction_consumer.js";
 import { TransactionEtl } from "../services/etl/transaction_etl.js";
 import { JsonTransactionSource } from "../services/sources/json_transaction_source.js";
-import { MongoClient } from "../db/mongo/client.mongo.js";
-import { ReportModel } from "../db/mongo/report.mongo.js";
 import { CsvTransactionSource } from "../services/sources/csv_transaction_source.js";
 import { CsvTransactionConsumer } from "../services/consumers/csv_transaction_consumer.js";
 import { XmlTransactionSource } from "../services/sources/xml_transaction_source.js";
 import { XmlTransactionConsumer } from "../services/consumers/xml_transaction_consumer.js";
+import { CustomerRepository } from "../repositories/customer.repository.js";
+import { prismaClient } from "../db/sql/client.prisma.js";
 
-interface Counter {
+interface Summary {
   count: number;
 }
 
 export const etlRouter = express.Router();
 
 etlRouter.post("/process", async (_req, res) => {
-  const ref = { count: 0 };
-
   try {
-    await processTransactions(ref);
+    const summary = await processTransactions();
+    console.log(`${summary.count} transactions successfully processed`);
     return res.status(200).json({
-      message: `${ref.count} transactions where successfully processed`,
+      message: `${summary.count} transactions where successfully processed`,
       success: true,
     });
   } catch (error) {
@@ -37,9 +36,13 @@ etlRouter.post("/process", async (_req, res) => {
   }
 });
 
-async function processTransactions(counter: Counter) {
+async function processTransactions(): Promise<Summary> {
   const logger: Logger = getLogger();
+  const client = prismaClient;
+  const customerRepository = new CustomerRepository(client);
   const etl = new TransactionEtl({ logger });
+
+  const counter = { count: 0 };
   const onSuccessfullyProcessed = () => {
     counter.count += 1;
   };
@@ -50,41 +53,41 @@ async function processTransactions(counter: Counter) {
         url: "https://www.softrizon.com/wp-content/uploads/ch/group-b.json",
         logger,
       }),
-      new JsonTransactionConsumer({ onSuccessfullyProcessed })
+      new JsonTransactionConsumer({
+        onSuccessfullyProcessed,
+        customerRepository,
+      })
     )
-    .pipe(
-      new CsvTransactionSource({
-        filePath: path.join(process.cwd(), "sn/data/group-a.csv"),
-        logger,
-      }),
-      new CsvTransactionConsumer({ onSuccessfullyProcessed })
-    )
-    .pipe(
-      new XmlTransactionSource({
-        filePath: path.join(process.cwd(), "sn/data/group-c.xml"),
-        logger,
-      }),
-      new XmlTransactionConsumer({ onSuccessfullyProcessed })
-    )
+    // .pipe(
+    //   new CsvTransactionSource({
+    //     filePath: path.join(process.cwd(), "sn/data/group-a.csv"),
+    //     logger,
+    //   }),
+    //   new CsvTransactionConsumer({
+    //     onSuccessfullyProcessed,
+    //     customerRepository,
+    //   })
+    // )
+    // .pipe(
+    //   new XmlTransactionSource({
+    //     filePath: path.join(process.cwd(), "sn/data/group-c.xml"),
+    //     logger,
+    //   }),
+    //   new XmlTransactionConsumer({
+    //     onSuccessfullyProcessed,
+    //     customerRepository,
+    //   })
+    // )
     .results();
 
-  const mqChannel = await messageQueue.createChannel();
-  const mongoConn = await MongoClient.connect();
-
-  await mqChannel.consume(queueKeys.queue.errors, (msg) => {
-    const buffer = msg?.content;
-    if (buffer) {
-      const json = buffer.toString();
-      console.log({ json });
-    }
-  });
+  const channel = await messageQueue.createChannel();
 
   for await (const result of results) {
     // console.log(`${Date.now()} - Publishing ${result.type} result to queue`);
     switch (result.type) {
       case "error":
         {
-          mqChannel.publish(
+          channel.publish(
             queueKeys.exchanges.transactions,
             queueKeys.routingKey.error,
             Buffer.from(result.error.message)
@@ -93,17 +96,11 @@ async function processTransactions(counter: Counter) {
         break;
       case "success":
         {
-          mqChannel.publish(
+          channel.publish(
             queueKeys.exchanges.transactions,
             queueKeys.routingKey.insight,
             Buffer.from(JSON.stringify(result.data))
           );
-
-          const reportModel = new ReportModel({
-            ...result.data,
-          });
-
-          await reportModel.save();
         }
         break;
       default:
@@ -112,6 +109,7 @@ async function processTransactions(counter: Counter) {
   }
 
   await messageQueue.close();
-  await mongoConn.close();
-  console.log(`${counter.count} transactions successfully processed`);
+  return {
+    count: counter.count,
+  };
 }

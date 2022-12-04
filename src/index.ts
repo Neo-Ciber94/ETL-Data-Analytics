@@ -4,25 +4,17 @@ import "./env.js";
 
 import express from "express";
 import morgan from "morgan";
-import { queueKeys } from "./config/queues.js";
-import { messageQueue } from "./db/mq/rabbitmq.js";
 import { etlRouter } from "./routes/etl.route.js";
 import { getLogger } from "./logging/logger.js";
 import { prismaClient } from "./db/sql/client.prisma.js";
+import initMessageQueueConsumers from "./mq/init";
 
 const logger = getLogger();
 const port = process.env.PORT || 5080;
 const app = express();
 
-const mqChannel = await messageQueue.createChannel();
-
-await mqChannel.consume(queueKeys.queue.errors, (msg) => {
-  const buffer = msg?.content;
-  if (buffer) {
-    const json = buffer.toString();
-    logger.debug({ json });
-  }
-});
+// Start message queue consumers
+await initMessageQueueConsumers(logger);
 
 app.use(morgan("dev"));
 app.use("/etl", etlRouter);
