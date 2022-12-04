@@ -16,14 +16,17 @@ An Extract-Transform-Load (ETL) project from 3 sources.
 
 1. To start the project use `docker compose up -d` and wait for all the services to initialize
 2. After that hit the endpoint `http://localhost:18080/etl/process` to start processing the transactions
-    - **(Windows)** 
-    ```bash
-    Invoke-WebRequest http://localhost:18080/etl/process -Method POST -UseBasicParsing
-    ```
-    - **(Linux)** 
-    ```bash
-    curl -X POST http://localhost:18080/etl/process
-    ```
+    - **(Windows)**
+
+        ```bash
+        Invoke-WebRequest http://localhost:18080/etl/process -Method POST -UseBasicParsing
+        ```
+
+    - **(Linux)**
+
+        ```bash
+        curl -X POST http://localhost:18080/etl/process
+        ```
 
     This may take some seconds
 3. Check the reports in the `mongodb` database, in the `reports` collection: <http://localhost:18082>
