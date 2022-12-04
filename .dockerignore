@@ -5,5 +5,8 @@ node_modules/
 private/
 assets/
 tests/
+.vscode
 vite.config.js
 nodemon.json
+.eslintrc.*
+README.md

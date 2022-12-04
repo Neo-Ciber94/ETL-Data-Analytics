@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/Neo-Ciber94/ETL-Data-Analytics#readme",
   "devDependencies": {
+    "@types/amqplib": "^0.10.0",
     "@types/fs-extra": "^9.0.13",
     "@types/xml2js": "^0.4.11",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
@@ -38,6 +39,8 @@
     "vitest-fetch-mock": "^0.2.1"
   },
   "dependencies": {
+    "amqplib": "^0.10.3",
+    "dotenv": "^16.0.3",
     "fs-extra": "^11.1.0",
     "winston": "^3.8.2",
     "xml2js": "^0.4.23",
