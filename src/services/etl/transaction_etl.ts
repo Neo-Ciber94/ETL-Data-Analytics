@@ -1,5 +1,5 @@
 import { Logger } from "../../logging/logger.js";
-import { Report } from "../../model/report.js";
+import { Report } from "../../validations/report_schema";
 import { TransactionError } from "../../model/transaction_error.js";
 import { Result } from "../../utils/result.js";
 import { Stream } from "../../utils/streams.js";

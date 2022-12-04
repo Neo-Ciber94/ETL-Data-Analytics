@@ -1,4 +1,4 @@
-import { Report } from "../model/report";
+import { Report } from "../validations/report_schema.js";
 import { TransactionType } from "../validations/transaction_type_schema.js";
 
 export interface TransactionSummary {

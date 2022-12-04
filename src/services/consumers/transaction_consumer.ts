@@ -1,4 +1,4 @@
-import { Report } from "../../model/report.js";
+import { Report } from "../../validations/report_schema.js";
 import { TransactionError } from "../../model/transaction_error.js";
 import { Result } from "../../utils/result.js";
 import { Stream } from "../../utils/streams.js";

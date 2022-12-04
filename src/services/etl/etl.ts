@@ -1,7 +1,7 @@
-import { Report } from "../../model/report";
 import { TransactionError } from "../../model/transaction_error";
 import { Result } from "../../utils/result";
 import { Stream } from "../../utils/streams";
+import { Report } from "../../validations/report_schema";
 import { TransactionConsumer } from "../consumers/transaction_consumer";
 import { TransactionSource } from "../sources/transaction_source";
 
