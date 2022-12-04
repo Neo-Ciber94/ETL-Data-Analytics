@@ -1,8 +1,13 @@
 import path from "path";
 import * as dotenv from "dotenv";
 
+const isRunningOnContainer = process.env.CONTAINERIZED === "true";
+
 dotenv.config({
-  path: path.join(process.cwd(), ".env.local"),
+  path: path.join(
+    process.cwd(),
+    isRunningOnContainer ? ".env.local.container" : ".env.local"
+  ),
   debug: true,
 });
 

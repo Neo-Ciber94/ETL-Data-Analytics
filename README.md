@@ -11,6 +11,12 @@ An Extract-Transform-Load (ETL) pipeline for stocks from 3 sources.
 
 ![Flow graph](./assets/process_transactions_graph.png)
 
+## Resources
+
+1. Environment files
+   - `.env.local` used for local development
+   - `.env.local.container` used when running in a container
+
 ## Getting started
 
 1. To start the project use `docker compose up -d` and wait for all the services to initialize

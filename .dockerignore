@@ -15,3 +15,5 @@ nodemon.json
 .eslintrc.*
 README.md
 .eslintignore
+
+# Environment
