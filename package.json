@@ -7,9 +7,11 @@
   "scripts": {
     "build": "tsc",
     "start": "npm run build && node --no-warnings dist/index.js",
+    "typecheck": "tsc --noEmit",
     "dev": "nodemon --exec \"npm run start\"",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "lint": "npx eslint src/**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -43,6 +45,7 @@
     "amqplib": "^0.10.3",
     "dotenv": "^16.0.3",
     "fs-extra": "^11.1.0",
+    "mongoose": "^6.7.5",
     "winston": "^3.8.2",
     "xml2js": "^0.4.23",
     "zod": "^3.19.1"
