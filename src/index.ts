@@ -15,7 +15,7 @@ const port = process.env.PORT || 5001;
 const app = express();
 
 // This is not necessary because the PrismaClient is lazy,
-// but helps to test the connection ton startup.
+// but helps to test the connection on startup.
 await prismaClient.$connect();
 logger.debug("prisma client connected");
 
