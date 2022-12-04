@@ -5,13 +5,15 @@ import {
   messageQueueReportConsumer,
   messageQueueErrorsConsumer,
 } from "./mq_consumers.js";
+import { ReportRepository } from "../repositories/report.repository.js";
 
 export default async function initMessageQueueConsumers(logger: Logger) {
   const mqChannel = await messageQueue.createChannel();
+  const reportRepository = new ReportRepository();
 
   await mqChannel.consume(
     queueKeys.queue.insights,
-    messageQueueReportConsumer(logger)
+    messageQueueReportConsumer(logger, reportRepository)
   );
 
   await mqChannel.consume(

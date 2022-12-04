@@ -82,6 +82,7 @@ async function processTransactions(): Promise<Summary> {
 
   const channel = await messageQueue.createChannel();
 
+  // FIXME: This should be parallelized
   for await (const result of results) {
     // console.log(`${Date.now()} - Publishing ${result.type} result to queue`);
     switch (result.type) {
