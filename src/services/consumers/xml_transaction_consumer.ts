@@ -4,23 +4,33 @@ import { LocalReportMap } from "../../utils/report_map";
 import { Result } from "../../utils/result";
 import { Stream } from "../../utils/streams";
 import { XmlTransaction } from "../../validations/xml_transaction_schema";
-import { TransactionConsumer } from "./transaction_consumer";
+import { InputStream, TransactionConsumer } from "./transaction_consumer";
 
 export class XmlTransactionConsumer
   implements TransactionConsumer<XmlTransaction>
 {
   async *process(
-    transactions: Stream<XmlTransaction>
+    transactions: InputStream<XmlTransaction>
   ): Stream<Result<Report, TransactionError>> {
     const reports = new LocalReportMap();
 
-    for await (const t of transactions) {
-      reports.post({
-        company: t.company,
-        total_amount: t.total,
-        total_stock: t.stock,
-        type: t.code,
-      });
+    for await (const result of transactions) {
+      switch (result.type) {
+        case "error":
+          yield result;
+          break;
+        case "success":
+          {
+            const t = result.data;
+            reports.post({
+              company: t.company,
+              total_amount: t.total,
+              total_stock: t.stock,
+              type: t.code,
+            });
+          }
+          break;
+      }
     }
 
     for (const report of reports.getAll()) {

@@ -9,7 +9,9 @@ const FILE_1_PATH = path.join(
 
 describe("Get transactions from a xml file", () => {
   test("expected read transactions from xml successfully", async () => {
-    const source = new XmlTransactionSource(FILE_1_PATH);
+    const source = new XmlTransactionSource({
+      filePath: FILE_1_PATH,
+    });
 
     const data = source.getAll();
 
