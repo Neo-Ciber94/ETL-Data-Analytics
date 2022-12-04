@@ -28,9 +28,15 @@ export class TransactionEtl implements Etl {
 
   async *results(): Stream<Result<Report, TransactionError>> {
     for (const [source, consumer] of this.streams) {
-      const data = source.stream(); // extract
-      const reports = consumer.process(data); // transform
-      yield* reports; // load
+      try {
+        const data = source.stream(); // extract
+        const reports = consumer.process(data); // transform
+        yield* reports; // load
+      } catch (e) {
+        yield Result.error({
+          message: `Failed to process transactions: ${JSON.stringify(e)}`,
+        });
+      }
     }
   }
 }

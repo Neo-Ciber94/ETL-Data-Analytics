@@ -33,8 +33,6 @@ export class JsonTransactionConsumer
       }
     }
 
-    console.log(reports);
-
     for (const report of reports.getAll()) {
       yield Result.ok(report);
     }
