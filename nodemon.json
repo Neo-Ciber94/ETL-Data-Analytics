@@ -1,8 +1,8 @@
 {
   "restartable": "rs",
-  "ignore": [".git", "node_modules/**/node_modules", "sn"],
+  "ignore": [".git", "node_modules/**/node_modules", "sn", "dist"],
   "verbose": true,
-  "watch": ["./src/**/*", "tsconfig.*"],
+  "watch": ["src", "tsconfig.*", "package.json"],
   "env": {
     "ENV": "development"
   },

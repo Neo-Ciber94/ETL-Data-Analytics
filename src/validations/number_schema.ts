@@ -8,4 +8,4 @@ export const numberSchema = z.preprocess((a) => {
   } else {
     return a;
   }
-}, z.number());
+}, z.number().positive());

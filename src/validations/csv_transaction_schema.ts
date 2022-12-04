@@ -9,7 +9,7 @@ export const csvTransactionSchema = z.object({
   total: numberSchema,
   total_stock: numberSchema,
   stock_price: numberSchema,
-  company: z.string(),
+  company: z.string().min(1),
   transaction_type: transactionTypeSchema,
-  email: z.string(),
+  email: z.string().min(1),
 });
