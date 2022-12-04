@@ -14,6 +14,8 @@ const logger = getLogger();
 const port = process.env.PORT || 5001;
 const app = express();
 
+// FIXME: Db connections are not resilient, a retry logic is required
+
 // This is not necessary because the PrismaClient is lazy,
 // but helps to test the connection on startup.
 await prismaClient.$connect();
