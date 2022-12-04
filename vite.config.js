@@ -1,5 +1,4 @@
 import { defineConfig } from "vitest/config";
-import path from "path";
 
 const isRunningOnGithubAction = process.env.GITHUB_ACTIONS === "true";
 const testToExclude = isRunningOnGithubAction
