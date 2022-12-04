@@ -1,26 +1,28 @@
 import { Report } from "../../validations/report_schema.js";
 import { TransactionError } from "../../model/transaction_error.js";
-import { LocalReportMap } from "../../utils/report_map.js";
+import { LocalCustomerInsightReport } from "../../utils/report_map.js";
 import { Result } from "../../utils/result.js";
 import { Stream } from "../../utils/streams.js";
 import { noop } from "../../utils/noop.js";
 import { XmlTransaction } from "../../validations/xml_transaction_schema.js";
 import { InputStream, TransactionConsumer } from "./transaction_consumer.js";
+import { CustomerRepository } from "../../repositories/customer.repository.js";
 
 export interface XmlTransactionConsumerOptions {
   readonly onSuccessfullyProcessed?: (transaction: XmlTransaction) => void;
+  readonly customerRepository: CustomerRepository;
 }
 
 export class XmlTransactionConsumer
   implements TransactionConsumer<XmlTransaction>
 {
-  constructor(readonly options: XmlTransactionConsumerOptions = {}) {}
+  constructor(readonly options: XmlTransactionConsumerOptions) {}
 
   async *process(
     transactions: InputStream<XmlTransaction>
   ): Stream<Result<Report, TransactionError>> {
-    const { onSuccessfullyProcessed = noop } = this.options;
-    const reports = new LocalReportMap();
+    const { onSuccessfullyProcessed = noop, customerRepository } = this.options;
+    const reports = new LocalCustomerInsightReport();
 
     for await (const result of transactions) {
       switch (result.type) {
@@ -30,8 +32,21 @@ export class XmlTransactionConsumer
         case "success":
           {
             const t = result.data;
+            const customer =
+              await customerRepository.dangerouslyGetCustomerByName(t.name);
+
+            if (customer == null) {
+              yield Result.error({
+                message: `Customer with name ${t.name} was not found`,
+              });
+              continue;
+            }
+
             reports.post({
-              company: t.company,
+              customer: {
+                name: customer.name,
+                username: customer.username,
+              },
               total_amount: t.total,
               total_stock: t.stock,
               type: t.code,
@@ -43,7 +58,7 @@ export class XmlTransactionConsumer
       }
     }
 
-    for (const report of reports.getAll()) {
+    for (const report of reports.reports()) {
       yield Result.ok(report);
     }
   }

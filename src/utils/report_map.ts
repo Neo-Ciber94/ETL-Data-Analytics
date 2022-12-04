@@ -2,30 +2,32 @@ import { Report } from "../validations/report_schema.js";
 import { TransactionType } from "../validations/transaction_type_schema.js";
 
 export interface TransactionSummary {
-  company: string;
   type: TransactionType;
   total_amount: number;
   total_stock: number;
+  customer: {
+    name: string;
+    username: string;
+  };
 }
 
 /**
  * An in memory map to build reports.
  */
-export class LocalReportMap {
-  private readonly reports = new Map<string, Report>();
+export class LocalCustomerInsightReport {
+  private readonly customerReports = new Map<string, Report>();
 
   /**
    * Adds or update a report using the given transaction information.
    * @param transaction The transaction to add.
    */
   post(transaction: TransactionSummary) {
-    const company = transaction.company;
-    let report = this.reports.get(company);
+    let report = this.customerReports.get(transaction.customer.username);
 
     if (report == null) {
       report = {
-        name: company,
-        username: company,
+        name: transaction.customer.name,
+        username: transaction.customer.username,
         buy_count: 0,
         sell_count: 0,
         total_stock: 0,
@@ -55,13 +57,14 @@ export class LocalReportMap {
         break;
     }
 
-    this.reports.set(company, report);
+    this.customerReports.set(transaction.customer.username, report);
   }
 
   /**
    * Get all the generated reports.
    */
-  getAll() {
-    return Array.from(this.reports.values());
+  reports() {
+    // map to deep copy the data and not just the reference.
+    return Array.from(this.customerReports.values()).map((obj) => ({ ...obj }));
   }
 }
