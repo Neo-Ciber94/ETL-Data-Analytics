@@ -18,7 +18,7 @@ export interface CsvTransactionSourceOptions {
 export class CsvTransactionSource implements TransactionSource<CsvTransaction> {
   constructor(readonly options: CsvTransactionSourceOptions) {}
 
-  async *getAll(): Stream<Result<CsvTransaction, TransactionError>> {
+  async *stream(): Stream<Result<CsvTransaction, TransactionError>> {
     const { filePath, separator, logger = nullLogger } = this.options;
     const results = csvToJsonStream({
       filePath: filePath,

@@ -9,5 +9,5 @@ export interface TransactionSource<T> {
   /**
    * Returns a stream of data.
    */
-  getAll(): Stream<Result<T, TransactionError>>;
+  stream(): Stream<Result<T, TransactionError>>;
 }

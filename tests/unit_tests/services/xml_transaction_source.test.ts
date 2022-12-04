@@ -13,7 +13,7 @@ describe("Get transactions from a xml file", () => {
       filePath: FILE_1_PATH,
     });
 
-    const data = source.getAll();
+    const data = source.stream();
 
     // FIXME: To speed development I only tested for successful parsing
     const next1 = await data.next();

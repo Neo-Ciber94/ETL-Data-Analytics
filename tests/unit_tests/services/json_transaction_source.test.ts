@@ -39,7 +39,7 @@ describe("Get transactions from external json file", () => {
     });
 
     const source = new JsonTransactionSource({ url: ENDPOINT });
-    const data = source.getAll();
+    const data = source.stream();
 
     // First value
     const next1 = await data.next();
@@ -66,7 +66,7 @@ describe("Get transactions from external json file", () => {
 
     const source = new JsonTransactionSource({ url: ENDPOINT });
     expect(async () => {
-      const data = source.getAll();
+      const data = source.stream();
       await data.next();
     }).rejects.toThrow();
   });

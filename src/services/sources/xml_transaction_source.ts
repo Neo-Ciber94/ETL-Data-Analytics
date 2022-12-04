@@ -18,7 +18,7 @@ export interface XmlTransactionSourceOptions {
 export class XmlTransactionSource implements TransactionSource<XmlTransaction> {
   constructor(readonly options: XmlTransactionSourceOptions) {}
 
-  async *getAll(): Stream<Result<XmlTransaction, TransactionError>> {
+  async *stream(): Stream<Result<XmlTransaction, TransactionError>> {
     const { filePath, logger = nullLogger } = this.options;
     const contents = await fs.readFile(filePath, "utf8");
     const results = await xmlToJson(contents, {

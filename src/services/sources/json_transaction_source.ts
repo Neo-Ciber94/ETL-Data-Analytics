@@ -19,7 +19,7 @@ export class JsonTransactionSource
 {
   constructor(readonly options: JsonTransactionSourceOptions) {}
 
-  async *getAll(): Stream<Result<JsonTransaction, TransactionError>> {
+  async *stream(): Stream<Result<JsonTransaction, TransactionError>> {
     const { url, logger = nullLogger } = this.options;
     // FIXME: Streaming the json response could be better to prevent load +10mb.
     const res = await fetch(url);

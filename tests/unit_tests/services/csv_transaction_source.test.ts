@@ -91,7 +91,7 @@ describe("Get transactions from a csv file", () => {
     } as CsvTransaction;
 
     const source = new CsvTransactionSource({ filePath: FILE_1_PATH });
-    const data = source.getAll();
+    const data = source.stream();
 
     const first = await data.next();
     expect(first.value.type).toBe("success");
@@ -105,7 +105,7 @@ describe("Get transactions from a csv file", () => {
   test("expected to read file failing", async () => {
     const source = new CsvTransactionSource({ filePath: FILE_2_PATH });
 
-    const data = source.getAll();
+    const data = source.stream();
 
     const first = await data.next();
     expect(first.value.type).toStrictEqual("error");
@@ -117,7 +117,7 @@ describe("Get transactions from a csv file", () => {
     });
 
     const process = async () => {
-      const data = source.getAll();
+      const data = source.stream();
       for await (const _ of data) {
         // nothing
       }
