@@ -1,10 +1,12 @@
 // Import env first
 import "./env.js";
+// Import env first
+
+import express from "express";
+import morgan from "morgan";
 import { queueKeys } from "./config/queues.js";
 import { messageQueue } from "./db/mq/rabbitmq.js";
 import { etlRouter } from "./routes/etl.route.js";
-import express from "express";
-import morgan from "morgan";
 import { getLogger } from "./logging/logger.js";
 
 const logger = getLogger();
