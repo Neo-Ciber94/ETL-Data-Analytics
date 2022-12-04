@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,23 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model accounts {
+  account_id BigInt    @id
+  username   String    @db.VarChar(20)
+  customers  customers @relation(fields: [username], references: [username], onDelete: NoAction, onUpdate: NoAction, map: "fk_username")
+
+  @@index([username], map: "fk_username")
+}
+
+model customers {
+  username  String     @id @db.VarChar(20)
+  name      String     @db.VarChar(60)
+  address   String     @db.VarChar(255)
+  email     String     @unique(map: "unq_email") @db.VarChar(255)
+  birthdate DateTime   @db.DateTime(0)
+  accounts  accounts[]
+
+  @@index([name, birthdate, address], map: "idx_name_birthdate_address")
 }

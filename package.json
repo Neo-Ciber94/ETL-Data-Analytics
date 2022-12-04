@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "npx eslint src/**/*.ts",
-    "clean": "npx rimraf dist/"
+    "clean": "npx rimraf dist/",
+    "clean:mysql": "npx rimraf ./sn/data/apps/mysql-data"
   },
   "repository": {
     "type": "git",
@@ -46,6 +47,7 @@
     "vitest-fetch-mock": "^0.2.1"
   },
   "dependencies": {
+    "@prisma/client": "^4.7.1",
     "amqplib": "^0.10.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
