@@ -42,7 +42,5 @@ An Extract-Transform-Load (ETL) pipeline for stocks from 3 sources.
 4. Check the rabbit message queue, in the `transactions.error` and `transactions.insight` queues: <http://localhost:18083>
    - user: root
    - password: EtLTest2022
-5. To remove the containers run `docker compose down`
-
-
-If you make changes to the code before deploy delete the `etl` image from docker (if exists).
+5. To remove the containers run `docker compose down && npm run clean:etl`
+   - The last command `npm run clean:etl` removes the `etl` docker image.
