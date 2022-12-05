@@ -39,7 +39,7 @@ An Extract-Transform-Load (ETL) pipeline for stocks from 3 sources.
 3. Check the reports in the `mongodb` database, in the `reports` collection: <http://localhost:18082>
    - user: root
    - password: EtLTest2022
-4. Check the rabbit message queue, in the `transactions.error` and `transactions.insight` queues: <http://localhost:18083>
+4. Check the rabbit message queue, in the `transactions.error` and `transactions.insight` queues: <http://localhost:18083>, to prevent consuming messages twice I added an expiration, so the messages could disappear.
    - user: root
    - password: EtLTest2022
 5. To remove the containers run `docker compose down && npm run clean:etl`
