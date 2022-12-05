@@ -79,6 +79,35 @@ export class CustomerRepository {
     return customer;
   }
 
+  async getByNameBirthDateAndAddress(criteria: {
+    name: string;
+    birthdate: Date;
+    address: string;
+  }): Promise<customers | null> {
+    const { client, cache = getNullCache() } = this.options;
+    const { name, birthdate, address } = criteria;
+    const mmddyyyy = dateToMMddYYYY(birthdate);
+    const key = JSON.stringify({ name, mmddyyyy, address });
+
+    if (await cache.has(key)) {
+      return cache.get(key);
+    }
+
+    const customer = await client.customers.findFirst({
+      where: {
+        name,
+        birthdate,
+        address,
+      },
+    });
+
+    if (customer) {
+      await cache.set(key, customer);
+    }
+
+    return customer;
+  }
+
   // FIXME: Searching for the name is not safe
   async dangerouslyGetCustomerByName(name: string): Promise<customers | null> {
     const { client, cache = getNullCache() } = this.options;
@@ -98,4 +127,15 @@ export class CustomerRepository {
 
     return customer;
   }
+}
+
+function dateToMMddYYYY(date: Date): string {
+  if (!(date instanceof Date)) {
+    date = new Date(date);
+  }
+
+  const month = date.getMonth();
+  const day = date.getDate();
+  const year = date.getFullYear();
+  return [month, day, year].join("-");
 }

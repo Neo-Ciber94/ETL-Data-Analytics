@@ -1,11 +1,11 @@
 import { customers } from "@prisma/client";
 import express from "express";
-import { MemoryCache } from "../caching/memory.cache";
-import { connectToQueue } from "../db/mq/rabbitmq";
-import { prismaClient } from "../db/sql/client.prisma";
-import { getLogger } from "../logging/logger";
-import { CustomerRepository } from "../repositories/customer.repository";
-import { TransactionAggregator } from "../services/aggregator/aggregator";
+import { MemoryCache } from "../caching/memory.cache.js";
+import { connectToQueue } from "../db/mq/rabbitmq.js";
+import { prismaClient } from "../db/sql/client.prisma.js";
+import { getLogger } from "../logging/logger.js";
+import { CustomerRepository } from "../repositories/customer.repository.js";
+import { TransactionAggregator } from "../services/aggregator/aggregator.js";
 
 export const etlRouter = express.Router();
 
